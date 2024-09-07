@@ -4,7 +4,6 @@ namespace CalculatorLibrary;
 
     public class Calculator
     {
-
         JsonWriter writer;
 
         public Calculator()
@@ -81,18 +80,28 @@ namespace CalculatorLibrary;
                     Console.WriteLine($"Calculator usage count is {usageCount} times.");
                     writer.WriteValue("UsageCount");
                     break;
-                // Return text for an incorrect option entry.
-                default:
+                 case "l":
+                     Get_Latest_Calculations();
+                     Console.WriteLine("\nTo Clear the history list type option 'C'");
+                     writer.WriteValue("last calc");
+                     break;
+                case "c":
+                    DeleteGameResult(); // this delete the whole list
+                    writer.WriteValue("DeletList");
+                    break;
+                default:     // Return text for an incorrect option entry.
                     break;
             }
-           if (op != "u")  
+
+           if (op != "u" && op != "l" && op !="c")  
             {
-                usageCount++; 
+                usageCount++;
+                AddGameResult(result.ToString());
             }
+
             writer.WritePropertyName("Result");
             writer.WriteValue(result);
             writer.WriteEndObject();
-
             return result;
         }
 
@@ -101,5 +110,32 @@ namespace CalculatorLibrary;
             writer.WriteEndArray();
             writer.WriteEndObject();
             writer.Close();
+        }
+
+    //  latest calculations functions.
+    private static List<string> results = new List<string>();
+    public static void AddGameResult(string result)
+        {
+           results.Add(result);
+        }
+    public static void DeleteGameResult()
+        {
+            results.Clear();
+            Console.WriteLine("Result list clear now.");
+        }
+
+    public static void Get_Latest_Calculations()
+    {
+        if (results.Count == 0 )
+        {
+            Console.WriteLine("There is no calculation history yet.");
+        }
+        else
+        {
+            foreach (var result in results)
+            {
+                Console.WriteLine($"your latest calculation result was {result}");
+            }
+        }
     }
-}
+}       

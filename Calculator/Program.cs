@@ -1,9 +1,9 @@
 ﻿using CalculatorLibrary;
+
 using System.Text.RegularExpressions;
 
 namespace CalculatorProgram
 {
-
     class Program
     {
         public static int usageCount = 0;
@@ -15,7 +15,7 @@ namespace CalculatorProgram
             while (!endApp)
             {
                 Console.WriteLine("==================================");
-                Console.WriteLine("      Console Calculator in C#");
+                Console.WriteLine("     Console Calculator in C#");
                 Console.WriteLine("==================================");
                 Console.WriteLine();
                 // Declare variables and set to empty.
@@ -29,15 +29,15 @@ namespace CalculatorProgram
                 Console.WriteLine();
                 Console.WriteLine("  a  - Add                d  - Divide             tan - Tangent              w  - 10x");
                 Console.WriteLine("  s  - Subtract           p  - Power              sin - Sine                 u  - UsageCount");
-                Console.WriteLine("  m  - Multiply           r  - Square Root        cos - Cosine");
+                Console.WriteLine("  m  - Multiply           r  - Square Root        cos - Cosine               l  - LatestRusult");
                 Console.WriteLine();
                 Console.Write("Your option? ");
 
-                string? op = Console.ReadLine();
+                string? op = Console.ReadLine().ToLower();
 
                 
                 // Validate input is not null, and matches the pattern
-                if (op == null || !Regex.IsMatch(op, "[a|s|m|d|u|r|p|w|t]"))
+                if (op == null || !Regex.IsMatch(op, "[a|s|m|d|p|r|tan|cos|sin|w|u|l|c]"))
                 {
                     Console.WriteLine("Error: Unrecognized input.");
                     continue;
@@ -47,8 +47,17 @@ namespace CalculatorProgram
                 {
                     Console.WriteLine($"Calculator usage count is {usageCount} times.");
                 }
+                
+                else if (op == "l" )
+                {
+                    calculator.DoOperation(0, 0, "l", ref usageCount);
+                }
+                else if (op == "c")
+                {
+                    calculator.DoOperation(0, 0, "c", ref usageCount);
+                }
 
-                else
+                else 
                 {// Ask the user to type the first number.
                     Console.Write("Type a number, and then press Enter: ");
                     numInput1 = Console.ReadLine();
@@ -64,6 +73,7 @@ namespace CalculatorProgram
                     if (op != "r" && op != "w" && op != "sin" && op != "cos" && op != "tan")
                     {
                         Console.Write("Type another number, and then press Enter: ");
+
                         numInput2 = Console.ReadLine();
 
                         double cleanNum2 = 0;
@@ -75,12 +85,32 @@ namespace CalculatorProgram
                         try
                         {
                             result = calculator.DoOperation(cleanNum1, cleanNum2 , op, ref usageCount);
-                            if (double.IsNaN(result) && op != "u")
+                            if (double.IsNaN(result) && op != "u" && op !="l")
                             {
                                 Console.WriteLine("This operation will result in a mathematical error.\n");
                             }
 
-                            else if (op != "u")
+                            else if (op != "u" && op != "l")
+                            {
+                                Console.WriteLine("Your result: {0:0.##}\n", result);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
+                        }
+                    }
+                    else
+                    {
+                        // For operations like 'r', 'w', 'sin', 'cos', 'tan'
+                        try
+                        {
+                            result = calculator.DoOperation(cleanNum1, 0, op, ref usageCount); // Passing 0 for unused operand
+                            if (double.IsNaN(result) && op != "u" && op != "l")
+                            {
+                                Console.WriteLine("This operation will result in a mathematical error.\n");
+                            }
+                            else if (op != "u" && op != "l")
                             {
                                 Console.WriteLine("Your result: {0:0.##}\n", result);
                             }
