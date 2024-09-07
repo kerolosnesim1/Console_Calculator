@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
-namespace CalculatorLibrary
-{
+namespace CalculatorLibrary;
+
     public class Calculator
     {
 
@@ -18,7 +18,7 @@ namespace CalculatorLibrary
             writer.WriteStartArray();
         }
 
-        public double DoOperation(double num1, double num2, string op)
+        public double DoOperation(double num1, double num2, string op , ref int usageCount)
         {
             double result = double.NaN; // Default value is "not-a-number" if an operation, such as division, could result in an error.
             writer.WriteStartObject();
@@ -50,9 +50,44 @@ namespace CalculatorLibrary
                     }
                     writer.WriteValue("Divide");
                     break;
+                case "r":
+                if (num1 >= 0)
+                   {
+                       result = Math.Sqrt(num1);
+                   }
+                writer.WriteValue("Square Root");
+                    break;
+                case "p":
+                    result = Math.Pow(num1 , num2);
+                    writer.WriteValue("Taking the Power");
+                    break;
+                case "w":
+                    result = result = 10 * num1;
+                    writer.WriteValue("10x");
+                    break;
+                case "sin":
+                    result = Math.Sin(num1 * (Math.PI / 180.0)); 
+                    writer.WriteValue("Sine");
+                    break;
+                case "cos":
+                    result = Math.Cos(num1 * (Math.PI / 180.0));
+                    writer.WriteValue("Cosine");
+                    break;
+                case "tan":
+                    result = Math.Tan(num1 * (Math.PI / 180.0));
+                    writer.WriteValue("Tangent");
+                    break;
+                case "u":
+                    Console.WriteLine($"Calculator usage count is {usageCount} times.");
+                    writer.WriteValue("UsageCount");
+                    break;
                 // Return text for an incorrect option entry.
                 default:
                     break;
+            }
+           if (op != "u")  
+            {
+                usageCount++; 
             }
             writer.WritePropertyName("Result");
             writer.WriteValue(result);
@@ -66,6 +101,5 @@ namespace CalculatorLibrary
             writer.WriteEndArray();
             writer.WriteEndObject();
             writer.Close();
-        }
     }
 }
